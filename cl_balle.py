@@ -48,9 +48,22 @@ class Balle:
             rx1, ry1, rx2, ry2 = canvas.coords(raquette.id)
             # si la balle touche la raquette
             if (self.vy > 0 and (self.y + self.rayon) >= ry1 and (self.y - self.rayon) <= ry2 and (self.x >= rx1) and (self.x <= rx2)):
-                # on place la balle juste au-dessus et on inverse vy
+                raquette_centre = (rx1 + rx2) / 2
+                distance_centre = self.x - raquette_centre
+                
+                # Normalisation de la raquette (-1 = tout à gauche, 1 = tout à droite)
+                proportion = distance_centre / (raquette.largeur / 2)
+                
+                # Définition d'un angle maximum de rebond
+                import math
+                angle_max = math.radians(60)
+                angle = proportion * angle_max
+                
+                vitesse = (self.vx**2 + self.vy**2)**0.5  # On garde la même vitesse en norme
+                self.vx = vitesse * math.sin(angle)
+                self.vy = -abs(vitesse * math.cos(angle))  # La balle rebondit toujours vers le haut
                 self.y = ry1 - self.rayon
-                self.vy = -abs(self.vy)
+
 
         # Collision avec les briques
         for ligne in liste_brique:

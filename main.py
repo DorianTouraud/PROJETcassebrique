@@ -9,8 +9,7 @@ root.title("Casse-briques")
 
 fonctions.packZoneDeJeu(root)
 fonctions.packRuban(root,fonctions.renvoiCanvas,0,3)
-fonctions.bindings(root)
+fonctions.bindings()
 
-fonctions.miseaJour(root)
 
 root.mainloop()

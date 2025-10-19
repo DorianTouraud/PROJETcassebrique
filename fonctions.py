@@ -58,13 +58,13 @@ def afficherBrique(canva):
 '''
 FONCTIONS d'initalisation
 '''
-def bindings(frame):
+def bindings():
     #Binds de la raquette
     DisplayJeu.focus_set()
-    frame.bind("<KeyPress-Left>", Raquette.appui_gauche)
-    frame.bind("<KeyRelease-Left>", Raquette.relache_gauche)
-    frame.bind("<KeyPress-Right>", Raquette.appui_droite)
-    frame.bind("<KeyRelease-Right>", Raquette.relache_droite)
+    DisplayJeu.bind("<KeyPress-Left>", obj_raquette.appui_gauche)
+    DisplayJeu.bind("<KeyRelease-Left>", obj_raquette.relache_gauche)
+    DisplayJeu.bind("<KeyPress-Right>", obj_raquette.appui_droite)
+    DisplayJeu.bind("<KeyRelease-Right>", obj_raquette.relache_droite)
 
 
 #Briques
@@ -103,7 +103,9 @@ Initialiser toutes les fonctions de Briques et de Boules
 def initialiserPartie():
     initialiserBriques()
     initialiserRaquette()
+    initialiserBalle()
     DisplayDemarrer.config(text='jeu en cours', state='disabled')
+    miseaJour(DisplayJeu.master)
 
 """
 Mettre à jour la fenetre et les entrees
@@ -111,4 +113,4 @@ Mettre à jour la fenetre et les entrees
 def miseaJour(frame):
     obj_balle.bouger(DisplayJeu, obj_raquette, liste_brique)
     obj_raquette.mise_a_jour(DisplayJeu)
-    frame.after(10, miseaJour(frame))  
+    frame.after(10, miseaJour, frame)  
