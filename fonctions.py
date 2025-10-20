@@ -30,7 +30,12 @@ def perte_vie(frame):
     ruban.DisplayVies.config(text=f"VIES : {ruban.vies}")
 
     if ruban.vies <= 0:
-        DisplayJeu.create_text(LARGEUR_FENETRE/2, HAUTEUR_FENETRE/2,text="GAME OVER", fill="white", font=("Arial", 40, "bold"))
+        DisplayJeu.create_text(LARGEUR_FENETRE/2, HAUTEUR_FENETRE/2, text="GAME OVER", fill="white", font=("Arial", 40, "bold"))
+        # Arrêter la balle
+        from fonctions import obj_balle, obj_raquette
+        obj_balle.active = False
+        obj_raquette.vers_gauche = False
+        obj_raquette.vers_droite = False
         return False  # stop le jeu
     return True
 
@@ -101,9 +106,9 @@ largeur_mur = 8 * 120 + 7 * 10
 marge_x = (LARGEUR_FENETRE - largeur_mur) / 2
 
 def initialiserBriques():
-    for i in range(5):
+    for i in range(5): 
         ligne_brique = []
-        for j in range(8):
+        for j in range(8): 
             x = marge_x + j * 130
             y = 50 + i * 58
             couleur = couleurs[i % len(couleurs)]
@@ -120,7 +125,7 @@ def ajouter_score_ligne(frame, ligne_idx):
     if ruban.combo_stack and ruban.combo_stack[-1] == ligne_idx:
         ruban.combo_stack.append(ligne_idx)
     else:
-        # Nouvelle ligne : reset la pile et empile la ligne actuelle
+        # Nouvelle ligne : reset  pile et empile la ligne actuelle
         ruban.combo_stack = [ligne_idx]
 
     # Calcul du multiplicateur : 1 + 0.5 par brique consécutive sur la même ligne
@@ -152,6 +157,7 @@ Initialiser toutes les fonctions de Briques et de Boules
 def initialiserPartie():
     DisplayJeu.master.ruban.vies = 3
     DisplayJeu.master.ruban.DisplayVies.config(text="VIES : 3")
+    obj_balle.active = True 
     initialiserBriques()
     initialiserRaquette()
     initialiserBalle()
@@ -163,13 +169,10 @@ def initialiserPartie():
 Mettre à jour la fenetre et les entrees
 """
 def miseaJour(frame):
+    if not obj_balle.active:
+        return  # le jeu est fini, on arrête la boucle
     obj_balle.bouger(DisplayJeu, obj_raquette, liste_brique)
     obj_raquette.mise_a_jour(DisplayJeu)
-    # Si la balle est tombée sous le bas du canvas
-    if obj_balle.y - obj_balle.rayon >= HAUTEUR_FENETRE:
-        if not perte_vie(frame):
-            return  # stop la boucle si GAME OVER
-        frame.after(1000, miseaJour, frame)
-    else:
-        frame.after(10, miseaJour, frame)
+    frame.after(10, miseaJour, frame)
+
 
