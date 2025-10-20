@@ -74,5 +74,15 @@ class Balle:
                     if (self.x + self.rayon >= bx1 and self.x - self.rayon <= bx2 and self.y + self.rayon >= by1 and self.y - self.rayon <= by2):
                         canvas.delete(brique.id) # Supprime la brique
                         brique.id = None 
-                        self.vy = -self.vy 
-                        break  
+
+                        # Calcul des distances pour détecter le côté touché
+                        dx_gauche = abs((self.x + self.rayon) - bx1)
+                        dx_droite = abs((self.x - self.rayon) - bx2)
+                        dy_haut = abs((self.y + self.rayon) - by1)
+                        dy_bas = abs((self.y - self.rayon) - by2)
+                        min_dist = min(dx_gauche, dx_droite, dy_haut, dy_bas)
+                        if min_dist == dx_gauche or min_dist == dx_droite:
+                            self.vx = -self.vx
+                        else:
+                            self.vy = -self.vy
+                        break

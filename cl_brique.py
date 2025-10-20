@@ -1,5 +1,5 @@
 class Brique:
-    def __init__(self, indice, x, y, largeur=60, hauteur=20, couleur="red"):
+    def __init__(self, indice, x, y, largeur=120, hauteur=50, couleur="red"):
         self.indice = indice
         self.x = x
         self.y = y
