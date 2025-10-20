@@ -66,23 +66,26 @@ class Balle:
 
 
         # Collision avec les briques
-        for ligne in liste_brique:
+        for ligne_idx, ligne in enumerate(liste_brique):
             for brique in ligne:
                 if brique.id is not None:
                     bx1, by1, bx2, by2 = canvas.coords(brique.id)
-                    # Vérifie si la balle touche la brique
                     if (self.x + self.rayon >= bx1 and self.x - self.rayon <= bx2 and self.y + self.rayon >= by1 and self.y - self.rayon <= by2):
-                        canvas.delete(brique.id) # Supprime la brique
-                        brique.id = None 
+                        canvas.delete(brique.id)  # Supprime la brique
+                        brique.id = None
 
-                        # Calcul des distances pour détecter le côté touché
+                        # Gestion du rebond selon le côté touché
                         dx_gauche = abs((self.x + self.rayon) - bx1)
                         dx_droite = abs((self.x - self.rayon) - bx2)
                         dy_haut = abs((self.y + self.rayon) - by1)
                         dy_bas = abs((self.y - self.rayon) - by2)
                         min_dist = min(dx_gauche, dx_droite, dy_haut, dy_bas)
                         if min_dist == dx_gauche or min_dist == dx_droite:
-                            self.vx = -self.vx
+                            self.vx = -self.vx if self.vx != 0 else 3
                         else:
-                            self.vy = -self.vy
-                        break
+                            self.vy = -self.vy if self.vy != 0 else 3
+
+                        # Ajouter le score avec combo par ligne
+                        import fonctions
+                        if canvas.master:
+                            fonctions.ajouter_score_ligne(canvas.master, ligne_idx)

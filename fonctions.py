@@ -50,6 +50,7 @@ def packRuban(frame, canva, score, vies):
     DisplayRuban = Frame(frame, padx=10, pady=10, bg='cadetblue4')
     DisplayRuban.score = score
     DisplayRuban.vies = vies
+    DisplayRuban.combo_stack = []  # pile pour les lignes touchées
 
     DisplayRuban.DisplayScore = Label(DisplayRuban, text=f"SCORE : {score}")
     DisplayRuban.DisplayScore.pack(side='left', padx=7, pady=5)
@@ -96,11 +97,14 @@ def bindings():
 #Briques
 liste_brique = []
 couleurs = ["red", "orange", "yellow", "green", "blue"]
+largeur_mur = 8 * 120 + 7 * 10
+marge_x = (LARGEUR_FENETRE - largeur_mur) / 2
+
 def initialiserBriques():
     for i in range(5):
         ligne_brique = []
         for j in range(8):
-            x = 75 + j * 130
+            x = marge_x + j * 130
             y = 50 + i * 58
             couleur = couleurs[i % len(couleurs)]
             obj_brique = Brique((i,j), x, y, couleur=couleur)
@@ -108,6 +112,24 @@ def initialiserBriques():
             #Canvas.create_rectangle(x,y, x + Brique.largeur, y + Brique.hauteur, couleur)
             ligne_brique.append(obj_brique)
         liste_brique.append(ligne_brique)
+
+def ajouter_score_ligne(frame, ligne_idx):
+    ruban = frame.ruban
+
+    # Si la pile est vide ou si on casse une brique sur la même ligne que le sommet
+    if ruban.combo_stack and ruban.combo_stack[-1] == ligne_idx:
+        ruban.combo_stack.append(ligne_idx)
+    else:
+        # Nouvelle ligne : reset la pile et empile la ligne actuelle
+        ruban.combo_stack = [ligne_idx]
+
+    # Calcul du multiplicateur : 1 + 0.5 par brique consécutive sur la même ligne
+    multiplicateur = 1 + (len(ruban.combo_stack) - 1) * 0.5
+    points = int(100 * multiplicateur)
+
+    ruban.score += points
+    ruban.DisplayScore.config(text=f"SCORE : {ruban.score}")
+
 
 
 #Raquette
