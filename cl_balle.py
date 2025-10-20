@@ -106,7 +106,7 @@ class Balle:
         # Vérifie si toutes les briques ont été détruites
         if all(brique.id is None for ligne in liste_brique for brique in ligne):
             canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2, text="GAGNE", fill="white", font=("Arial", 40, "bold"))
-            obj_balle.active = False
-            obj_raquette.vers_gauche = False
-            obj_raquette.vers_droite = False
+            obj_balle.active = False # type: ignore
+            obj_raquette.vers_gauche = False # type: ignore
+            obj_raquette.vers_droite = False # type: ignore
             return  # arrête de bouger la balle
