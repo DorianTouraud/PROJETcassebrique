@@ -1,3 +1,11 @@
+#####################################################################################################
+# Objectif : Gestion de l'interface graphique, du ruban, des scores, vies et initialisation du jeu
+# Auteurs : Dorian Touraud et Victor Saunier
+# Date : 20/10/2025
+# ToDo : Ajouter un menu pause ou paramètres
+#####################################################################################################
+
+
 """
 fonctions d'interface tkinter
 

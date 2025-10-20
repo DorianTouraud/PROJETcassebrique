@@ -1,3 +1,11 @@
+#####################################################################################################
+# Objectif : Classe Balle pour gérer position, mouvement, collisions avec raquette, murs et briques
+# Auteurs : Dorian Touraud et Victor Saunier
+# Date : 20/10/2025
+# ToDo : Ajouter éventuellement une vitesse variable
+#####################################################################################################
+
+
 class Balle:
     def __init__(self, x, y, rayon = 8, couleur = "red"):
         self.x = x
