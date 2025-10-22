@@ -3,7 +3,8 @@ fonctions d'interface tkinter
 TO_DO:
             FAIT supprimmer raquette fantome
     corriger rebond
-    score
+            FAIT score
+            FAIT texte de victoire
 """
 from tkinter import Frame, Canvas, Label, Button
 from cl_brique import Brique
@@ -31,7 +32,7 @@ class Fonctions:
         self.DisplayRuban.pack(side='top')
         self.DisplayScore = self.score_init
         self.DisplayVies = self.vies_init
-        self.PileCombo = []  # pile pour les lignes touchées
+        self.PileCombo = []  # pile pour les lignes de brique touchées
         self.DisplayJeu = Canvas(self.frame,width = self.LARGEUR_FENETRE, height = self.HAUTEUR_FENETRE, bg='gray26')
         self.DisplayJeu.pack(side='bottom')
 
@@ -39,10 +40,10 @@ class Fonctions:
         self.couleurs = ["red", "orange", "yellow", "green", "blue"]
         self.largeur_mur = 8 * 120 + 7 * 10
         self.marge_x = (self.LARGEUR_FENETRE - self.largeur_mur) / 2
+        self.ligne_idx = 0
         #raquette
         self.raquette_x = (self.LARGEUR_FENETRE - 80) / 2
         self.obj_raquette = Raquette(self.raquette_x)
-        
         #balle
 
        
@@ -94,7 +95,6 @@ class Fonctions:
         self.DisplayJeu.bind("<KeyPress-Right>", self.obj_raquette.appui_droite)
         self.DisplayJeu.bind("<KeyRelease-Right>", self.obj_raquette.relache_droite)
 
-    #Briques
     def initialiserBriques(self):
         self.liste_brique = []
         for i in range(5):
@@ -116,8 +116,10 @@ class Fonctions:
     def initialiserBalle(self):
         self.balle_x = self.obj_raquette.x + self.obj_raquette.largeur / 2
         self.balle_y = self.obj_raquette.y - 8 - 1
-        self.obj_balle = Balle(self.balle_x, self.balle_y)
+        self.obj_balle = Balle(self.balle_x, self.balle_y, on_brique_destroy=self.on_brique_destroy)
         self.obj_balle.afficher(self.DisplayJeu)
+
+        
 
     def initialiserPartie(self):
         #initialisation des graphiques et objets
@@ -132,32 +134,53 @@ class Fonctions:
         self.miseaJour()
 
     def Rejouer(self):
+        #nettoyer le canva des ibjets précédents
         self.DisplayJeu.delete('all')
         self.initialiserPartie()
         self.DisplayJeu.delete(self.GameOver)
-        self.bindings()
 
-    """
-    def ajouter_score_ligne(self):
-        # Si la pile est vide ou si on casse une brique sur la même ligne que le sommet
+
+    #fonction de gestion du score et du combo
+    def on_brique_destroy(self, ligne_idx):
         if self.PileCombo and self.PileCombo[-1] == ligne_idx:
             self.PileCombo.append(ligne_idx)
         else:
-            # Nouvelle ligne : reset la pile et empile la ligne actuelle
             self.PileCombo = [ligne_idx]
+
+        multiplicateur = 1 + (len(self.PileCombo) - 1) * 0.5
+        points = int(100 * multiplicateur)
+        self.score += points
+
+        if isinstance(self.DisplayScore, Label):
+            self.DisplayScore.config(text=f"SCORE : {self.score}")
+
+        
+
+
+
+    def ajouter_score_ligne(self):
+        # Si la pile est vide ou si on casse une brique sur la même ligne que le sommet
+        if self.PileCombo and self.PileCombo[-1] == self.ligne_idx:
+            self.PileCombo.append(self.ligne_idx)
+        else:
+            self.PileCombo = [self.ligne_idx]
 
         # Calcul du multiplicateur : 1 + 0.5 par brique consécutive sur la même ligne
         multiplicateur = 1 + (len(self.PileCombo) - 1) * 0.5
         points = int(100 * multiplicateur)
 
-        score += points
-        self.DisplayScore.config(text=f"SCORE : {score}")
-    """
+        self.score += points
+        self.DisplayScore.config(text=f"SCORE : {self.score}")
     
-    #Initialiser les fonctions d'affichage de briques, de raquette et de balle
-    
-    
-    
+    def VerifierBriquesRestantes(self):
+        print(self.ligne_idx)
+        if all(brique.id is None for ligne in self.liste_brique for brique in ligne):
+            self.GameOver = self.DisplayJeu.create_text(self.LARGEUR_FENETRE / 2, self.HAUTEUR_FENETRE / 2,text="GAGNE", fill="white", font=("Arial", 40, "bold"))
+            self.DisplayDemarrer.config(text='Redémarrer', state='active' ,command=self.Rejouer)
+            return False  # stop le jeu
+        else :
+            return True
+
     #Mettre à jour la fenetre et les entrees
     def miseaJour(self):
         self.obj_balle.bouger(self.DisplayJeu, self.obj_raquette, self.liste_brique)
@@ -167,6 +190,8 @@ class Fonctions:
             if not self.perte_vie():
                 return  # stop la boucle si GAME OVER
             self.frame.after(1000, self.miseaJour)
+        elif not self.VerifierBriquesRestantes():
+            return
         else:
             self.frame.after(10, self.miseaJour)
     
