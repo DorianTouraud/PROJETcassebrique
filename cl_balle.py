@@ -1,11 +1,3 @@
-#####################################################################################################
-# Objectif : Classe Balle pour gérer position, mouvement, collisions avec raquette, murs et briques
-# Auteurs : Dorian Touraud et Victor Saunier
-# Date : 20/10/2025
-# ToDo : Ajouter éventuellement une vitesse variable
-#####################################################################################################
-
-
 class Balle:
     def __init__(self, x, y, rayon = 8, couleur = "red"):
         self.x = x
@@ -14,7 +6,6 @@ class Balle:
         self.couleur = couleur
         self.vx = 3
         self.vy = -3
-        self.vie_perdue = False
         self.id = None
 
     def afficher(self, canvas):
@@ -23,15 +14,10 @@ class Balle:
     def bouger(self, canvas, raquette, liste_brique):
         self.x += self.vx
         self.y += self.vy
-        self.active = True
         canvas.move(self.id, self.vx, self.vy)
         largeur = canvas.winfo_width()
         hauteur = canvas.winfo_height()
         
-        # Arret du mouvement de la balle si on gagne/perd
-        if not self.active:
-                return
-
         # Collision avec les murs gauche/droite/plafond
         if self.x - self.rayon <= 0:
             self.x = self.rayon
@@ -45,24 +31,17 @@ class Balle:
         
         # Collision avec la bordure inférieure
         if self.y - self.rayon >= hauteur:
-            if not self.vie_perdue:
-                # Déclenche perte de vie une seule fois
-                import fonctions
-                if canvas.master:
-                    fonctions.perte_vie(canvas.master)
-                self.vie_perdue = True
-            # recentre la raquette et replace la balle juste au-dessus
+            # recentre la raquette
             nouveau_raquette_x = (largeur - raquette.largeur) / 2
             dx = nouveau_raquette_x - raquette.x
             raquette.x = nouveau_raquette_x
             canvas.move(raquette.id, dx, 0)
+            # replace la balle juste au-dessus de la raquette
             self.x = raquette.x + raquette.largeur / 2
             self.y = raquette.y - self.rayon - 1
             self.vx = 3
             self.vy = -3
             canvas.coords(self.id, self.x - self.rayon, self.y - self.rayon, self.x + self.rayon, self.y + self.rayon)
-        elif self.vie_perdue and self.y - self.rayon < hauteur - 10:
-            self.vie_perdue = False
 
         # Collision avec la raquette
         if raquette.id is not None:
@@ -106,15 +85,7 @@ class Balle:
                         else:
                             self.vy = -self.vy if self.vy != 0 else 3
 
-                        # Ajouter le score avec combo par ligne
+                        """# Ajouter le score avec combo par ligne
                         import fonctions
                         if canvas.master:
-                            fonctions.ajouter_score_ligne(canvas.master, ligne_idx)
-        
-        # Vérifie si toutes les briques ont été détruites
-        if all(brique.id is None for ligne in liste_brique for brique in ligne):
-            canvas.create_text(canvas.winfo_width()/2, canvas.winfo_height()/2, text="GAGNE", fill="white", font=("Arial", 40, "bold"))
-            obj_balle.active = False # type: ignore
-            obj_raquette.vers_gauche = False # type: ignore
-            obj_raquette.vers_droite = False # type: ignore
-            return  # arrête de bouger la balle
+                            fonctions.ajouter_score_ligne(canvas.master, ligne_idx)"""

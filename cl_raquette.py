@@ -1,24 +1,18 @@
-#####################################################################################################
-# Objectif : Classe Raquette pour gérer position, déplacement et collisions
-# Auteurs : Dorian Touraud et Victor Saunier
-# Date : 20/10/2025
-# ToDo : Ajouter éventuellement animation ou effet de rebond
-#####################################################################################################
-
 class Raquette:
-    def __init__(self, x, y = 700, largeur = 100, hauteur = 10, couleur = "black"):
+    def __init__(self, x, y = 500, largeur = 100, hauteur = 10, couleur = "black", contour = "white"):
         self.x = x
         self.y = y
         self.largeur = largeur
         self.hauteur = hauteur
         self.couleur = couleur
+        self.contour = contour
         self.vitesse = 10
         self.vers_gauche = False
         self.vers_droite = False
         self.id = None
     
     def afficher(self,canvas):
-        self.id = canvas.create_rectangle(self.x, self.y, self.x + self.largeur, self.y + self.hauteur, fill = self.couleur)
+        self.id = canvas.create_rectangle(self.x, self.y, self.x + self.largeur, self.y + self.hauteur, fill = self.couleur, outline = self.contour)
 
     def deplacer_gauche(self, canvas):
         if self.x - self.vitesse >= 0:
@@ -42,7 +36,7 @@ class Raquette:
     def relache_droite(self, event=None):
         self.vers_droite = False
 
-    def mise_a_jour(self, canvas):
+    def deplacementRaquette(self, canvas):
         if self.vers_gauche:
             self.deplacer_gauche(canvas)
         if self.vers_droite:

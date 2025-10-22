@@ -1,11 +1,3 @@
-#####################################################################################################
-# Objectif : Classe Brique pour gérer position, dimensions, couleur et affichage
-# Auteurs : Dorian Touraud et Victor Saunier
-# Date : 20/10/2025
-# ToDo : Ajouter des types de briques
-#####################################################################################################
-
-
 class Brique:
     def __init__(self, indice, x, y, largeur=120, hauteur=50, couleur="red"):
         self.indice = indice
