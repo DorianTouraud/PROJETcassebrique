@@ -46,6 +46,7 @@ class Fonctions:
 
        
     def ScoreVies(self):
+        #initialise l affichage du score et ses valeurs
         self.score = self.score_init
         self.vies = self.vies_init
         self.DisplayScore = Label(self.DisplayRuban, text=f"SCORE : {self.score}")
@@ -54,7 +55,8 @@ class Fonctions:
         self.DisplayVies.pack(side='left', padx=7, pady=5)
         
     def boutonDemarrer(self):
-        self.DisplayDemarrer = Button(self.DisplayRuban,text='Démarrer', command = self.initialiserPartie) #ne pas mettre () après appel de initialiserPartie
+        #cree un bouton pour lancer la partie
+        self.DisplayDemarrer = Button(self.DisplayRuban,text='Démarrer', command = self.initialiserPartie)
         self.DisplayDemarrer.pack(side = 'right',padx=7,pady=5)
 
     def boutonQuitter(self):
@@ -63,20 +65,21 @@ class Fonctions:
         self.DisplayQuitter.pack(side = 'right',padx=7,pady=5)
 
     def packRuban(self):
-        ## ajouter dans __init__
+        #lance les fonctions d affichage du score, de la vite et les boutons
         self.ScoreVies()
         self.boutonQuitter()
         self.boutonDemarrer()
 
     def perte_vie(self):
+        #diminue le nombre de vie
         self.vies -= 1
         self.DisplayVies.config(text=f"VIES : {self.vies}")
-
+        #arrete la partie si le nombre de vie tombe a zero
         if self.vies <= 0:
             self.GameOver = self.DisplayJeu.create_text(self.LARGEUR_FENETRE / 2, self.HAUTEUR_FENETRE / 2,text="GAME OVER", fill="white", font=("Arial", 40, "bold"))        
             self.DisplayDemarrer.config(text='Redémarrer', state='active' ,command=self.Rejouer)
-            return False  # stop le jeu
-        return True
+            return False  #stoppe le jeu
+        return True #poursuit l execution du jeu si il reste des vies
 
     
     #FONCTIONS de creation et gestion du CANVAS
@@ -94,12 +97,14 @@ class Fonctions:
         self.DisplayJeu.bind("<KeyRelease-Right>", self.obj_raquette.relache_droite)
 
     def initialiserBriques(self):
+        #creer chaque brique et l afficher sur le canva
         self.liste_brique = []
         for i in range(5):
             ligne_brique = []
             for j in range(8):
                 x = self.marge_x + j * 130
                 y = 50 + i * 58
+                #donne une couleur a chaque brique selon sa ligne
                 couleur = self.couleurs[i % len(self.couleurs)]
                 obj_brique = Brique((i,j), x, y, couleur=couleur)
                 obj_brique.afficher(self.DisplayJeu)
@@ -107,13 +112,16 @@ class Fonctions:
             self.liste_brique.append(ligne_brique)
 
     def initialiserRaquette(self):
+        #cree et centre la raquette
         self.raquette_x = (self.LARGEUR_FENETRE - 80) / 2
         self.obj_raquette = Raquette(self.raquette_x)
         self.obj_raquette.afficher(self.DisplayJeu)
 
     def initialiserBalle(self):
+        #definie la position de depart de la balle
         self.balle_x = self.obj_raquette.x + self.obj_raquette.largeur / 2
         self.balle_y = self.obj_raquette.y - 8 - 1
+        #associe l action de detruire la brique
         self.obj_balle = Balle(self.balle_x, self.balle_y, on_brique_destroy=self.on_brique_destroy)
         self.obj_balle.afficher(self.DisplayJeu)
 
@@ -140,30 +148,28 @@ class Fonctions:
 
     #fonction de gestion du score et du combo
     def on_brique_destroy(self, ligne_idx):
+        #verifie si la brique cassee provient de la meme ligne que la precedente detruite
         if self.PileCombo and self.PileCombo[-1] == ligne_idx:
             self.PileCombo.append(ligne_idx)
         else:
             self.PileCombo = [ligne_idx]
-
+        #incrementation du multiplicateur
         multiplicateur = 1 + (len(self.PileCombo) - 1) * 0.5
         points = int(100 * multiplicateur)
         self.score += points
-
+        #mettre a jour le score
         if isinstance(self.DisplayScore, Label):
             self.DisplayScore.config(text=f"SCORE : {self.score}")
 
-        
-
-
 
     def ajouter_score_ligne(self):
-        # Si la pile est vide ou si on casse une brique sur la même ligne que le sommet
+        #Si la pile est vide ou si on casse une brique sur la même ligne que le sommet
         if self.PileCombo and self.PileCombo[-1] == self.ligne_idx:
             self.PileCombo.append(self.ligne_idx)
         else:
             self.PileCombo = [self.ligne_idx]
 
-        # Calcul du multiplicateur : 1 + 0.5 par brique consécutive sur la même ligne
+        #Calcul du multiplicateur : 1 + 0.5 par brique consécutive sur la même ligne
         multiplicateur = 1 + (len(self.PileCombo) - 1) * 0.5
         points = int(100 * multiplicateur)
 
@@ -171,12 +177,15 @@ class Fonctions:
         self.DisplayScore.config(text=f"SCORE : {self.score}")
     
     def VerifierBriquesRestantes(self):
+        #verifie si chaque brique possede un id et donc si elle est encore sur le canva
         if all(brique.id is None for ligne in self.liste_brique for brique in ligne):
+            #affiche le message de Game Over
             self.GameOver = self.DisplayJeu.create_text(self.LARGEUR_FENETRE / 2, self.HAUTEUR_FENETRE / 2,text="GAGNE", fill="white", font=("Arial", 40, "bold"))
+            #change l etat du bouton demarrer pour relancer la partie
             self.DisplayDemarrer.config(text='Redémarrer', state='active' ,command=self.Rejouer)
-            return False  # stop le jeu
+            return False #stoppe le jeu
         else :
-            return True
+            return True #le jeu continue de s executer
 
     #Mettre à jour la fenetre et les entrees
     def miseaJour(self):
