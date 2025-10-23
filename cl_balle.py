@@ -1,3 +1,9 @@
+#####################################################################################################
+# Objectif : Classe Balle pour gérer position, mouvement, collisions avec raquette, murs et briques
+# Auteurs : Dorian Touraud et Victor Saunier
+# Date : 20/10/2025
+#####################################################################################################
+
 import math
 
 class Balle:

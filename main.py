@@ -1,3 +1,11 @@
+#####################################################################################################
+# Objectif : Fichier principal pour lancer le jeu Casse-Briques
+# Auteurs : Dorian Touraud et Victor Saunier
+# Date : 20/10/2025
+# ToDo : 
+# Lien Github : https://github.com/DorianTouraud/PROJETcassebrique
+#####################################################################################################
+
 from cl_fonctions import Fonctions
 from tkinter import Tk
 

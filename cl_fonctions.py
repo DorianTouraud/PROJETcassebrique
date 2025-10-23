@@ -1,11 +1,9 @@
-"""
-fonctions d'interface tkinter
-TO_DO:
-            FAIT supprimmer raquette fantome
-    corriger rebond
-            FAIT score
-            FAIT texte de victoire
-"""
+#####################################################################################################
+# Objectif : Gestion de l'interface graphique, du ruban, des scores, vies et initialisation du jeu
+# Auteurs : Dorian Touraud et Victor Saunier
+# Date : 20/10/2025
+# ToDo : Ajouter un menu pause ou paramètres
+#####################################################################################################
 from tkinter import Frame, Canvas, Label, Button
 from cl_brique import Brique
 from cl_raquette import Raquette
@@ -173,7 +171,6 @@ class Fonctions:
         self.DisplayScore.config(text=f"SCORE : {self.score}")
     
     def VerifierBriquesRestantes(self):
-        print(self.ligne_idx)
         if all(brique.id is None for ligne in self.liste_brique for brique in ligne):
             self.GameOver = self.DisplayJeu.create_text(self.LARGEUR_FENETRE / 2, self.HAUTEUR_FENETRE / 2,text="GAGNE", fill="white", font=("Arial", 40, "bold"))
             self.DisplayDemarrer.config(text='Redémarrer', state='active' ,command=self.Rejouer)
@@ -190,7 +187,7 @@ class Fonctions:
             if not self.perte_vie():
                 return  # stop la boucle si GAME OVER
             self.frame.after(1000, self.miseaJour)
-        elif not self.VerifierBriquesRestantes():
+        elif self.obj_balle.y < 330 and not self.VerifierBriquesRestantes():
             return
         else:
             self.frame.after(10, self.miseaJour)

@@ -1,5 +1,12 @@
+#####################################################################################################
+# Objectif : Classe Raquette pour gérer position, déplacement et collisions
+# Auteurs : Dorian Touraud et Victor Saunier
+# Date : 20/10/2025
+# ToDo : Ajouter éventuellement animation ou effet de rebond
+#####################################################################################################
+
 class Raquette:
-    def __init__(self, x, y = 500, largeur = 100, hauteur = 10, couleur = "black", contour = "white"):
+    def __init__(self, x, y = 650, largeur = 100, hauteur = 10, couleur = "black", contour = "white"):
         self.x = x
         self.y = y
         self.largeur = largeur
