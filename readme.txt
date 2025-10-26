@@ -34,10 +34,10 @@ Spécificités du jeu
 - Balle : rayon de 8 pixels, vitesse initiale de 3 pixels par mise à jour.
 - Briques : largeur de 120 pixels, hauteur de 50 pixels, disposées en 5 lignes et 8 colonnes, avec des couleurs alternées.
 - Système de score avec combo :
-- Chaque brique rapporte 100 points.
-- Si plusieurs briques consécutives sont cassées sur la meme ligne, un multiplicateur de score est appliqué (1 + 0,5 par brique cons�cutive).
+   - Chaque brique rapporte 100 points.
+   - Si plusieurs briques consécutives sont cassées sur la meme ligne, un multiplicateur de score est appliqué (1 + 0,5 par brique cons�cutive).
 - Blocage des actions après la fin du jeu :
-- La balle s'arrete et la raquette ne peut plus etre déplacée.
+   - La balle s'arrete et la raquette ne peut plus etre déplacée.
 
 Comment lancer le jeu
 
@@ -51,5 +51,3 @@ Controles
 
 - Flèche gauche : déplacer la raquette vers la gauche
 - Flèche droite : déplacer la raquette vers la droite
-- Bouton Quitter : fermer le jeu
-
