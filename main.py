@@ -2,7 +2,6 @@
 # Objectif : Fichier principal pour lancer le jeu Casse-Briques
 # Auteurs : Dorian Touraud et Victor Saunier
 # Date de début du projet : 06/10/2025
-# ToDo : 
 # Lien Github : https://github.com/DorianTouraud/PROJETcassebrique
 #####################################################################################################
 
