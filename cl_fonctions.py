@@ -1,7 +1,7 @@
 #####################################################################################################
 # Objectif : Gestion de l'interface graphique, du ruban, des scores, vies et initialisation du jeu
 # Auteurs : Dorian Touraud et Victor Saunier
-# Date : 20/10/2025
+# Date de début du projet : 06/10/2025
 # ToDo : Ajouter un menu pause ou paramètres
 #####################################################################################################
 from tkinter import Frame, Canvas, Label, Button
@@ -26,7 +26,7 @@ class Fonctions:
         self.score = self.score_init
         self.vies = self.vies_init
         #displays
-        self.DisplayRuban = Frame(self.frame, width = self.LARGEUR_FENETRE, pady=10, bg='red')
+        self.DisplayRuban = Frame(self.frame, width = self.LARGEUR_FENETRE, pady=10)
         self.DisplayRuban.pack(side='top')
         self.DisplayScore = self.score_init
         self.DisplayVies = self.vies_init
@@ -89,8 +89,9 @@ class Fonctions:
     
     #FONCTIONS d'initalisation
     def bindings(self):
-        #Binds de la raquette
+        #defini le canva comme etant la fenetre a laquelle sont destine les appuis de touches
         self.DisplayJeu.focus_set()
+        #Binds de la raquette
         self.DisplayJeu.bind("<KeyPress-Left>", self.obj_raquette.appui_gauche)
         self.DisplayJeu.bind("<KeyRelease-Left>", self.obj_raquette.relache_gauche)
         self.DisplayJeu.bind("<KeyPress-Right>", self.obj_raquette.appui_droite)
@@ -122,32 +123,33 @@ class Fonctions:
         self.balle_x = self.obj_raquette.x + self.obj_raquette.largeur / 2
         self.balle_y = self.obj_raquette.y - 8 - 1
         #associe l action de detruire la brique
-        self.obj_balle = Balle(self.balle_x, self.balle_y, on_brique_destroy=self.on_brique_destroy)
+        self.obj_balle = Balle(self.balle_x, self.balle_y, destructionBrique=self.destructionBrique)
         self.obj_balle.afficher(self.DisplayJeu)
-
-        
 
     def initialiserPartie(self):
         #initialisation des graphiques et objets
         self.score = self.score_init
         self.vies = self.vies_init
         self.DisplayVies.config(text=f"VIES : {self.vies}")
+        self.DisplayScore.config(text=f"SCORE : {self.score}")
         self.initialiserBriques()
         self.initialiserRaquette()
         self.initialiserBalle()
         self.bindings()
+        #remplace le bouton demarrer pour afficher l etat de la partie
         self.DisplayDemarrer.config(text='jeu en cours', state='disabled')
+        #lance la boucle d actualisation du jeu
         self.miseaJour()
 
     def Rejouer(self):
         #nettoyer le canva des ibjets précédents
         self.DisplayJeu.delete('all')
         self.initialiserPartie()
+        #supprime le texte de fond du canva
         self.DisplayJeu.delete(self.GameOver)
 
-
     #fonction de gestion du score et du combo
-    def on_brique_destroy(self, ligne_idx):
+    def destructionBrique(self, ligne_idx):
         #verifie si la brique cassee provient de la meme ligne que la precedente detruite
         if self.PileCombo and self.PileCombo[-1] == ligne_idx:
             self.PileCombo.append(ligne_idx)
@@ -160,21 +162,6 @@ class Fonctions:
         #mettre a jour le score
         if isinstance(self.DisplayScore, Label):
             self.DisplayScore.config(text=f"SCORE : {self.score}")
-
-
-    def ajouter_score_ligne(self):
-        #Si la pile est vide ou si on casse une brique sur la même ligne que le sommet
-        if self.PileCombo and self.PileCombo[-1] == self.ligne_idx:
-            self.PileCombo.append(self.ligne_idx)
-        else:
-            self.PileCombo = [self.ligne_idx]
-
-        #Calcul du multiplicateur : 1 + 0.5 par brique consécutive sur la même ligne
-        multiplicateur = 1 + (len(self.PileCombo) - 1) * 0.5
-        points = int(100 * multiplicateur)
-
-        self.score += points
-        self.DisplayScore.config(text=f"SCORE : {self.score}")
     
     def VerifierBriquesRestantes(self):
         #verifie si chaque brique possede un id et donc si elle est encore sur le canva
@@ -189,17 +176,18 @@ class Fonctions:
 
     #Mettre à jour la fenetre et les entrees
     def miseaJour(self):
+        #deplacement de la balle et de la raquette
         self.obj_balle.bouger(self.DisplayJeu, self.obj_raquette, self.liste_brique)
         self.obj_raquette.deplacementRaquette(self.DisplayJeu)
-        # Si la balle est tombée sous le bas du canvas
+        #verifie si la balle est tombée sous le bas du canvas
         if self.obj_balle.y - self.obj_balle.rayon >= self.HAUTEUR_FENETRE:
             if not self.perte_vie():
                 return  # stop la boucle si GAME OVER
-            self.frame.after(1000, self.miseaJour)
+            self.frame.after(1000, self.miseaJour) #boucle qui relance la fct miseaJour
         elif self.obj_balle.y < 330 and not self.VerifierBriquesRestantes():
             return
         else:
-            self.frame.after(10, self.miseaJour)
+            self.frame.after(10, self.miseaJour) #boucle qui relance la fct miseaJour
     
 
     
